@@ -118,5 +118,21 @@ namespace EmployeeAPI.Service
 
             return existing;
         }
+        public async Task<List<MonthlyEarningsDto>> GetMonthlyEarningsAsync()
+        {
+            var monthlyEarnings = await _context.Patients
+                .GroupBy(p => new { p.AdmittedDate.Year, p.AdmittedDate.Month }) 
+                .Select(g => new MonthlyEarningsDto
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TotalEarnings = g.Sum(p => p.PaidAmount) 
+                })
+                .OrderBy(x => x.Year).ThenBy(x => x.Month)
+                .ToListAsync();
+
+            return monthlyEarnings;
+        }
+
     }
 }

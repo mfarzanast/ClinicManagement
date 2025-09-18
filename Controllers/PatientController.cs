@@ -21,6 +21,13 @@ namespace EmployeeAPI.Controllers
             var patient = await _service.CreatePatientAsync(dto);
             return Ok(patient);
         }
+        [HttpGet("monthly-earnings")]
+        public async Task<IActionResult> GetMonthlyEarnings()
+        {
+            var result = await _service.GetMonthlyEarningsAsync();
+            return Ok(result);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
