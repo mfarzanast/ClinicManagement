@@ -1,6 +1,8 @@
 ﻿using EmployeeAPI.DTO;
+using EmployeeAPI.Repository;
 using EmployeeAPI.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeAPI.Controllers
 {
@@ -9,9 +11,16 @@ namespace EmployeeAPI.Controllers
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _service;
+        private readonly AppDbContext _context;
 
-        public PatientController(IPatientService service)
+
+        
+     
+        public PatientController(IPatientService service ,           AppDbContext appDbContext)
+
         {
+            _context = appDbContext;
+
             _service = service;
         }
 
@@ -24,10 +33,24 @@ namespace EmployeeAPI.Controllers
         [HttpGet("monthly-earnings")]
         public async Task<IActionResult> GetMonthlyEarnings()
         {
-            var result = await _service.GetMonthlyEarningsAsync();
+            var result = await GetMonthlyEarningsAsync();
             return Ok(result);
         }
+        public async Task<List<MonthlyEarningsDto>> GetMonthlyEarningsAsync()
+        {
+            var monthlyEarnings = await _context.Patients
+                .GroupBy(p => new { p.AdmittedDate.Year, p.AdmittedDate.Month })
+                .Select(g => new MonthlyEarningsDto
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TotalEarnings = g.Sum(p => p.PaidAmount)
+                })
+                .OrderBy(x => x.Year).ThenBy(x => x.Month)
+                .ToListAsync();
 
+            return monthlyEarnings;
+        }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
