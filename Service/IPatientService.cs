@@ -12,6 +12,7 @@ namespace EmployeeAPI.Service
         Task<Patient?> GetByIdAsync(Guid id);
         Task<IEnumerable<Patient>> GetAllAsync();
         Task<Patient?> UpdatePatientAsync(Guid id, PatientCreateDto dto);
+        Task<Patient?> DischargePatientAsync(Guid id);
 
         Task<Patient> CreatePatientAsync(PatientCreateDto dto);
     }
@@ -44,7 +45,7 @@ namespace EmployeeAPI.Service
 
             return await _repository.UpdateAsync(patient);
         }
-
+       
         public async Task<Patient> CreatePatientAsync(PatientCreateDto dto)
         {
             var patient = new Patient
@@ -54,10 +55,12 @@ namespace EmployeeAPI.Service
                 Phone = dto.Phone,
                 ReferenceNumber = dto.ReferenceNumber,
                 Gender = dto.Gender,
-                AdmittedDate = dto.AdmittedDate,
+                AdmittedDate = dto.AdmittedDate.Date,
                 Treatments = dto.Treatments,
                 TotalAmount = dto.TotalAmount,
+                Age=dto.Age,
                 PaidAmount = dto.PaidAmount,
+                Status = true,
                 PendingAmount = dto.TotalAmount - dto.PaidAmount,
                 HealthInformations = dto.HealthInformations.Select(h => new HealthInformation
                 {
@@ -96,6 +99,7 @@ namespace EmployeeAPI.Service
             existing.PendingAmount = dto.TotalAmount - dto.PaidAmount;
             existing.ReferenceNumber = dto.ReferenceNumber;
             existing.Treatments = dto.Treatments;
+            existing.Age = dto.Age;
 
             if (existing.HealthInformations.Any())
             {
@@ -118,7 +122,20 @@ namespace EmployeeAPI.Service
 
             return existing;
         }
-      
+        public async Task<Patient?> DischargePatientAsync(Guid patientId)
+        {
+            var patient = await _repository.GetByIdAsync(patientId);
+            if (patient == null) return null;
+
+            if (patient.PendingAmount > 0)
+                throw new InvalidOperationException("Patient cannot be discharged with pending dues.");
+
+            patient.Status = false;
+
+            return await _repository.UpdateAsync(patient);
+        }
+
+
 
     }
 }

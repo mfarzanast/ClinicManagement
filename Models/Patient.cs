@@ -8,7 +8,9 @@ namespace EmployeeAPi.Models
         public string Name { get; set; }
            public string Phone { get; set; }
         public string  ReferenceNumber { get; set; }
+        public int Age { get; set; }
 
+        public bool Status { get; set; } 
 
 
 

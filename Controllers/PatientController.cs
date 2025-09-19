@@ -23,6 +23,8 @@ namespace EmployeeAPI.Controllers
 
             _service = service;
         }
+       
+
 
         [HttpPost]
         public async Task<IActionResult> Create(PatientCreateDto dto)
@@ -36,7 +38,7 @@ namespace EmployeeAPI.Controllers
             var result = await GetMonthlyEarningsAsync();
             return Ok(result);
         }
-        public async Task<List<MonthlyEarningsDto>> GetMonthlyEarningsAsync()
+        private  async Task<List<MonthlyEarningsDto>> GetMonthlyEarningsAsync()
         {
             var monthlyEarnings = await _context.Patients
                 .GroupBy(p => new { p.AdmittedDate.Year, p.AdmittedDate.Month })
@@ -87,6 +89,16 @@ namespace EmployeeAPI.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+
+        [HttpPut("{id}/discharge")]
+        public async Task<IActionResult> Discharge(Guid id)
+        {
+            var patient = await _service.DischargePatientAsync(id);
+            if (patient == null) return NotFound();
+
+            return Ok(patient);
         }
     }
 }

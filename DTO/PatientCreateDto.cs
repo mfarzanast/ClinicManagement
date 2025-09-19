@@ -10,7 +10,7 @@ namespace EmployeeAPI.DTO
 
         public Gender Gender { get; set; }
         public DateTime AdmittedDate { get; set; }
-
+       public int Age { get; set; }
         public string? Treatments { get; set; }
 
         public decimal? TotalAmount { get; set; }
