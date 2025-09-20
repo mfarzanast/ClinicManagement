@@ -10,21 +10,18 @@ namespace EmployeeAPI.Controllers
     [Route("api/[controller]")]
     public class PatientController : ControllerBase
     {
-        private readonly IPatientService _service;
         private readonly AppDbContext _context;
 
+        private readonly IPatientService _service;
+        private readonly IPaymentRepository _paymentRepository;
 
-        
-     
-        public PatientController(IPatientService service ,           AppDbContext appDbContext)
-
+        public PatientController(IPatientService service, IPaymentRepository paymentRepository, AppDbContext context)
         {
-            _context = appDbContext;
 
+            _context = context;
             _service = service;
+            _paymentRepository = paymentRepository;
         }
-       
-
 
         [HttpPost]
         public async Task<IActionResult> Create(PatientCreateDto dto)
@@ -32,27 +29,7 @@ namespace EmployeeAPI.Controllers
             var patient = await _service.CreatePatientAsync(dto);
             return Ok(patient);
         }
-        [HttpGet("monthly-earnings")]
-        public async Task<IActionResult> GetMonthlyEarnings()
-        {
-            var result = await GetMonthlyEarningsAsync();
-            return Ok(result);
-        }
-        private  async Task<List<MonthlyEarningsDto>> GetMonthlyEarningsAsync()
-        {
-            var monthlyEarnings = await _context.Patients
-                .GroupBy(p => new { p.AdmittedDate.Year, p.AdmittedDate.Month })
-                .Select(g => new MonthlyEarningsDto
-                {
-                    Year = g.Key.Year,
-                    Month = g.Key.Month,
-                    TotalEarnings = g.Sum(p => p.PaidAmount)
-                })
-                .OrderBy(x => x.Year).ThenBy(x => x.Month)
-                .ToListAsync();
 
-            return monthlyEarnings;
-        }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -76,13 +53,14 @@ namespace EmployeeAPI.Controllers
             return Ok(patient);
         }
 
-        [HttpPut("{id}/pay")]
-        public async Task<IActionResult> PayPending(Guid id, [FromBody] PaymentUpdateDto dto)
+        [HttpPost("{id}/pay")]
+        public async Task<IActionResult> Pay(Guid id, [FromBody] PaymentUpdateDto dto)
         {
             try
             {
                 var patient = await _service.PayPendingAmountAsync(id, dto.AmountPaid);
                 if (patient == null) return NotFound();
+
                 return Ok(patient);
             }
             catch (InvalidOperationException ex)
@@ -91,7 +69,6 @@ namespace EmployeeAPI.Controllers
             }
         }
 
-
         [HttpPut("{id}/discharge")]
         public async Task<IActionResult> Discharge(Guid id)
         {
@@ -99,6 +76,36 @@ namespace EmployeeAPI.Controllers
             if (patient == null) return NotFound();
 
             return Ok(patient);
+        }
+
+        [HttpGet("{id}/payments")]
+        public async Task<IActionResult> GetPayments(Guid id)
+        {
+            var payments = await _paymentRepository.GetByPatientIdAsync(id);
+            return Ok(payments);
+        }
+
+        [HttpGet("monthly-earnings")]
+        public async Task<IActionResult> GetMonthlyEarnings()
+        {
+            var result = await GetMonthlyEarningsAsync();
+            return Ok(result);
+        }
+
+        private async Task<List<MonthlyEarningsDto>> GetMonthlyEarningsAsync()
+        {
+            var monthlyEarnings = await _context.Payments
+                .GroupBy(p => new { p.PaidDate.Year, p.PaidDate.Month })
+                .Select(g => new MonthlyEarningsDto
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TotalEarnings = g.Sum(p => p.ReceivedAmount ?? 0) 
+                })
+                .OrderBy(x => x.Year).ThenBy(x => x.Month)
+                .ToListAsync();
+
+            return monthlyEarnings;
         }
     }
 }

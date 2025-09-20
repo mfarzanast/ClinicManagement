@@ -30,18 +30,20 @@ namespace EmployeeAPI.Repository
         {
             return await _context.Patients
                 .Include(p => p.HealthInformations)
+                .Include(p => p.Payments)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
+
         public async Task<IEnumerable<Patient>> GetAllAsync()
         {
             return await _context.Patients
                 .Include(p => p.HealthInformations)
+                .Include(p => p.Payments)
                 .ToListAsync();
         }
         public async Task<Patient> AddAsync(Patient patient)
         {
             _context.Patients.Add(patient);
-            // Because HealthInformations is filled, EF Core will insert them too
             await _context.SaveChangesAsync();
             return patient;
         }

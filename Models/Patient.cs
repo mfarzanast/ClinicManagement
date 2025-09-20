@@ -14,12 +14,12 @@ namespace EmployeeAPi.Models
         public DateTime AdmittedDate { get; set; }
 
         public string? Treatments { get; set; }
+        public decimal? TotalAmount { get; set; }
         public string? TreatmentDescription { get; set; }
 
-           // ✅ keep this too
 
         public ICollection<HealthInformation> HealthInformations { get; set; }
-        public ICollection<Payments> Payments { get; set; }
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 
     public enum Gender

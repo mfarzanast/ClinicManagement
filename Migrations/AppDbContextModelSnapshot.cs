@@ -41,6 +41,34 @@ namespace EmployeeAPI.Migrations
                     b.ToTable("HealthInformations");
                 });
 
+            modelBuilder.Entity("EmployeeAPI.Models.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("PaidDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("PendingAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("ReceivedAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("EmployeeAPi.Models.Patient", b =>
                 {
                     b.Property<Guid>("Id")
@@ -59,12 +87,6 @@ namespace EmployeeAPI.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("PaidAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PendingAmount")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -102,9 +124,22 @@ namespace EmployeeAPI.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("EmployeeAPI.Models.Payment", b =>
+                {
+                    b.HasOne("EmployeeAPi.Models.Patient", "Patient")
+                        .WithMany("Payments")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("EmployeeAPi.Models.Patient", b =>
                 {
                     b.Navigation("HealthInformations");
+
+                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }

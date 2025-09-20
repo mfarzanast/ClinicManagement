@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EmployeeAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,10 +24,8 @@ namespace EmployeeAPI.Migrations
                     Gender = table.Column<int>(type: "int", nullable: false),
                     AdmittedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Treatments = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TreatmentDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PaidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    PendingAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
+                    TreatmentDescription = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -53,9 +51,36 @@ namespace EmployeeAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ReceivedAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    PendingAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    PaidDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_HealthInformations_PatientId",
                 table: "HealthInformations",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_PatientId",
+                table: "Payments",
                 column: "PatientId");
         }
 
@@ -64,6 +89,9 @@ namespace EmployeeAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "HealthInformations");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "Patients");

@@ -10,6 +10,6 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<Patient>  Patients { get; set; }
-    public DbSet<Payments> Payments { get; set; }
+    public DbSet<Payment> Payments { get; set; }
     public DbSet<HealthInformation> HealthInformations { get; set; }
 }

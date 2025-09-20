@@ -26,6 +26,7 @@ namespace EmployeeAPI
 
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
             builder.Services.AddScoped<IPatientService, PatientService>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
             // ✅ Add CORS policy (AllowAll for testing)
             builder.Services.AddCors(options =>

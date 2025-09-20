@@ -2,9 +2,7 @@
 
 namespace EmployeeAPI.Models
 {
-    public class Payments
-    {
-
+  
         public class Payment
         {
             public Guid Id { get; set; }
@@ -19,4 +17,3 @@ namespace EmployeeAPI.Models
             public Patient Patient { get; set; }
         }
     }
-}
