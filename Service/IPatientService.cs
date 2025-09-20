@@ -57,6 +57,7 @@ namespace EmployeeAPI.Service
                 Gender = dto.Gender,
                 AdmittedDate = dto.AdmittedDate.Date,
                 Treatments = dto.Treatments,
+                TreatmentDescription = dto.TreatmentDescription,
                 TotalAmount = dto.TotalAmount,
                 Age=dto.Age,
                 PaidAmount = dto.PaidAmount,
@@ -67,7 +68,7 @@ namespace EmployeeAPI.Service
                     Id = Guid.NewGuid(),
                     Description = h.Description,
                     PatientId = Guid.Empty
-                }).ToList()
+                }).ToList(),
             };
 
             return await _repository.AddAsync(patient);
@@ -99,6 +100,7 @@ namespace EmployeeAPI.Service
             existing.PendingAmount = dto.TotalAmount - dto.PaidAmount;
             existing.ReferenceNumber = dto.ReferenceNumber;
             existing.Treatments = dto.Treatments;
+            existing.TreatmentDescription = dto.TreatmentDescription;
             existing.Age = dto.Age;
 
             if (existing.HealthInformations.Any())

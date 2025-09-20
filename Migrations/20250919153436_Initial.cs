@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EmployeeAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,9 +19,12 @@ namespace EmployeeAPI.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ReferenceNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
                     AdmittedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Treatments = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TreatmentDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     PaidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     PendingAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true)

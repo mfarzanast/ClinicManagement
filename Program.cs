@@ -1,4 +1,4 @@
-using EmployeeAPI.Repository;
+﻿using EmployeeAPI.Repository;
 using EmployeeAPI.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,12 +27,12 @@ namespace EmployeeAPI
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
             builder.Services.AddScoped<IPatientService, PatientService>();
 
-            // Add CORS policy
+            // ✅ Add CORS policy (AllowAll for testing)
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAngularDevClient", policy =>
+                options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200")
+                    policy.AllowAnyOrigin()
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
@@ -49,8 +49,8 @@ namespace EmployeeAPI
 
             app.UseHttpsRedirection();
 
-            // Enable CORS
-            app.UseCors("AllowAngularDevClient");
+            // ✅ Enable CORS
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 

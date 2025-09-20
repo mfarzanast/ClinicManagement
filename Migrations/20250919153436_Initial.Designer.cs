@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250919105830_addfeilds")]
-    partial class addfeilds
+    [Migration("20250919153436_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,6 +82,9 @@ namespace EmployeeAPI.Migrations
 
                     b.Property<decimal?>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TreatmentDescription")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Treatments")
                         .HasColumnType("nvarchar(max)");

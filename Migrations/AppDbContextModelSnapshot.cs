@@ -80,6 +80,9 @@ namespace EmployeeAPI.Migrations
                     b.Property<decimal?>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TreatmentDescription")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Treatments")
                         .HasColumnType("nvarchar(max)");
 

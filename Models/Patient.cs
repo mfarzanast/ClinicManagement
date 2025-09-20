@@ -6,29 +6,22 @@ namespace EmployeeAPi.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-           public string Phone { get; set; }
-        public string  ReferenceNumber { get; set; }
+        public string Phone { get; set; }
+        public string ReferenceNumber { get; set; }
         public int Age { get; set; }
-
-        public bool Status { get; set; } 
-
-
-
+        public bool Status { get; set; }
         public Gender Gender { get; set; }
-        public  DateTime AdmittedDate { get; set; }
+        public DateTime AdmittedDate { get; set; }
 
         public string? Treatments { get; set; }
+        public string? TreatmentDescription { get; set; }
 
-        public decimal? TotalAmount { get; set; }
-        public decimal? PaidAmount { get; set; }
-        public decimal? PendingAmount { get; set; }
-
-
+           // ✅ keep this too
 
         public ICollection<HealthInformation> HealthInformations { get; set; }
-
-
+        public ICollection<Payments> Payments { get; set; }
     }
+
     public enum Gender
     {
         Male = 1,
